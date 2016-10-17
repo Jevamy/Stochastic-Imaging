@@ -15,6 +15,7 @@ import numpy as np
 #from scipy.optimize import curve_fit
 import random 
 
+""" Credit for initial makeGaussian function goes to username: Giessel at http://stackoverflow.com/questions/7687679/how-to-generate-2d-gaussian-with-python """
 
 def makeGaussian(size, fwhm = 3, center=None):
     """ Make a square gaussian kernel.
