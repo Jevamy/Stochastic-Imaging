@@ -13,9 +13,8 @@ from PIL import Image
 import numpy as np
 #from scipy import asarray as exp
 #from scipy.optimize import curve_fit
-import random 
-
-""" Credit for initial makeGaussian function goes to username: Giessel at http://stackoverflow.com/questions/7687679/how-to-generate-2d-gaussian-with-python """
+import random
+import os
 
 def makeGaussian(size, fwhm = 3, center=None):
     """ Make a square gaussian kernel.
@@ -42,9 +41,7 @@ def makeGaussian(size, fwhm = 3, center=None):
     
     return newgauss
 makeGaussian(5,3,)
-
-
-              
+           
 def Plot_Max(num_points): #Input number of random pixels and detect them
     img = Image.new( 'RGBA', (512,512), "black") # create a new black image
     pixels = img.load() # create the pixel map    
@@ -85,10 +82,95 @@ def Plot_Max(num_points): #Input number of random pixels and detect them
     img.show()          
 Plot_Max(5)
  # apply matrix to pixels surrounding centre point to create gaussian distribution
-  
+
+
+ 
+def Plot_Square(number):
+    img = Image.new('RGBA', (512,512), "black") # create a new black image
+    pixels = img.load() # create the pixel map    
+    width, height = img.size
+    
+    num_points = random.randint(1,5) #set number of random points wanted
+     
+    #Create empty arrays for each side of the square
+    topArray = []
+    rightArray = []
+    leftArray = []
+    bottomArray = []
+    i = 0
+    
+    #define the points in each side of the square (10px apart around centre of image)
+    while (i < 20):
+        topArray.append(((156 + (i*10)),156))
+        rightArray.append((356,(156 + (i*10))))
+        leftArray.append((156, (156 + (i*10))))
+        bottomArray.append(((156 + (i*10)),356))
+        i += 1
+        
+    #concatenate all of the sides into one array
+    totalArray = np.concatenate((topArray, rightArray, leftArray, bottomArray))
+
+    Coords_of_cntre = []
+    new_colour = (255,255,255,1) #white 
+    num_its = 0
+    gaussianList = makeGaussian(5,3,)
+    
+    while num_its <= num_points: #iterate through number of points and randomly plot them
+        randomInt = random.randint(0,75) #find random index in square array
+        point = totalArray[randomInt] #assign coords to random index
+        img.putpixel(point,new_colour) #Changes Pixel Colour to white
+        num_its += 1 #increase count by one
+        if num_its == num_points:#break out statement
+            break
+    
+    for i in range(width): #for each pixel
+        for j in range(height):
+            if pixels[i,j] == (255,255,255,1):   #check if pixel is max point
+                Loc_of_point = (i,j) #locate position
+                Coords_of_cntre.append(Loc_of_point) #add coordinates to list
+                    
+    for coord in (Coords_of_cntre): #for each maximum 
+        index = 0
+        for x in range(coord[0]-2, coord[0]+3, 1): # 5 pixels in x and y direction
+            for y in range(coord[1]-2, coord[1]+3, 1):
+                if ((x & y) <= 512) & ((x & y) >= 0): # boundary limits
+                    if index < len(gaussianList): # keep index with list values
+
+                        img.putpixel((x,y), (gaussianList[index],gaussianList[index],gaussianList[index],1)) # change colour of pixel
+                        
+                        index = index + 1 #count through gaussian list
+            
+    print('There are' ,num_points, 'maximum points. At the following locations :-' ,Coords_of_cntre ) 
+
+    #try to save image in folder defined if it doesn't already exist
+    if not os.path.exists(r'folder/' + str(number) + '.jpg'):
+        img.save("/home/pi/Desktop/folder/" + str(number) + ".jpg", 'JPEG')
+    #if it does exist add 5000 to number to make it new
+    else:
+        img.save("/home/pi/Desktop/folder/" + str(number + 5000) + ".jpg", 'JPEG')
+
+def Run_Multiple(howMany):
+    #create directory named 'folder'
+    newpath = r'folder'
+    if not os.path.exists(newpath):
+        os.makedirs(newpath)
+
+    #run square how many times wanted
+    for i in range(howMany):
+        Plot_Square(i)
+
+Run_Multiple(5)
+
+
+    
 
 """ 
 To do list:
 - Randomize Gaussian function so different sizes and intensities can appear
+  ^ Different intensities and spreads ^
+- Pixels close to each other in one image
+- Modify code so that pixels form shape at random
+- Overlay images?
+
 - create another Python program to interpret the image created
 """
