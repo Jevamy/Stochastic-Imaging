@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
 Created on Mon Oct 03 10:55:57 2016
-
 @author: py13jej
 """
 
@@ -18,15 +16,13 @@ import random
 import os
 
 def makeGaussian(size, fwhm, center=None):
-    """JEJ changes 24/10/16 
-    add flexibility for size of gaussian"""
+
     gsize = size
     global lowerlimit, upperlimit, newgauss
     lowerlimit = math.floor(gsize/2)
     upperlimit = math.ceil(gsize/2)
    
     """ Make a square gaussian kernel.
-
     size is the length of a side of the square
     fwhm is full-width-half-maximum, which
     can be thought of as an effective radius.
@@ -41,9 +37,9 @@ def makeGaussian(size, fwhm, center=None):
         x0 = center[0]
         y0 = center[1]
 
-    gauss = 256*np.exp(-4*np.log(2) * ((x-x0)**2 + (y-y0)**2) / fwhm**2)
+    gauss = 256*np.exp(-4*np.log(2) * ((x-x0)**2 + (y-y0)**2) / fwhm**2) # scales Gaussian to 255 colour range
 
-    for i in gauss:
+    for i in gauss: # creates list of gaussian values
         for num in i:
             newgauss.append(int(num))
 
@@ -76,6 +72,7 @@ def Plot_Max(num_points): #Input number of random pixels and detect them
                       
     for coord in (Coords_of_cntre): #for each maximum 
         makeGaussian(random.randint(3,9),random.randint(2,4),)  #call function to make individual guassian distributions for each point
+        print(upperlimit, lowerlimit)
         gaussianList = newgauss
         index = 0 # count through gauss list
         if (coord[0]-lowerlimit >= 0) & (coord[0]+upperlimit <= width): #checks to see gaussians lie within pixel map
@@ -88,10 +85,10 @@ def Plot_Max(num_points): #Input number of random pixels and detect them
                                 img.putpixel((hor,ver), (gaussianList[index],gaussianList[index],gaussianList[index],1)) # change colour of pixel
                                 index = index + 1 #count through gaussian list
             else:
-                print("Gaussian Distribution lies outside of image map")
+                print("Y coordinate Gaussian values lie outside of image map", coord , lowerlimit, upperlimit)
         else : 
-            print("Gaussian Distribution lies outside of image map")
-    print('There are' ,num_points, 'maximum points. At the following locations :-' ,Coords_of_cntre ) 
+            print("X coordinate Gaussian values lie outside of image map", coord , lowerlimit, upperlimit)
+    #print('There are' ,num_points, 'maximum points. At the following locations :-' ,Coords_of_cntre ) 
     
     img.show()          
 Plot_Max(100)
@@ -125,7 +122,7 @@ def Plot_Square(number):
     totalArray = np.concatenate((topArray, rightArray, leftArray, bottomArray))
 
     Coords_of_cntre = []
-    new_colour = (255,255,255,1) #white 
+    new_colour = (255,0,0,1) #white 
     num_its = 0
     gaussianList = makeGaussian(5,3,)
     
@@ -139,33 +136,35 @@ def Plot_Square(number):
     
     for i in range(width): #for each pixel
         for j in range(height):
-            if pixels[i,j] == (255,255,255,1):   #check if pixel is max point
+            if pixels[i,j] == (255,0,0,1):   #check if pixel is max point
                 Loc_of_point = (i,j) #locate position
                 Coords_of_cntre.append(Loc_of_point) #add coordinates to list
                     
     for coord in (Coords_of_cntre): #for each maximum 
+        makeGaussian(random.randint(3,9),random.randint(2,4),)  #call function to make individual guassian distributions for each point
+        gaussianList = newgauss
         index = 0
         for x in range(coord[0]-lowerlimit, coord[0]+upperlimit, 1): # 5 pixels in x and y direction
             for y in range(coord[1]-lowerlimit, coord[1]+upperlimit, 1):
                 if (((x <= width) & y <= height)) & ((x & y) >= 0): # boundary limits
                     if index < len(gaussianList): # keep index with list values
 
-                        img.putpixel((x,y), (gaussianList[index],gaussianList[index],gaussianList[index],1)) # change colour of pixel
+                        img.putpixel((x,y), (gaussianList[index],0,0,1)) # change colour of pixel
                         
                         index = index + 1 #count through gaussian list
             
     print('There are' ,num_points, 'maximum points. At the following locations :-' ,Coords_of_cntre ) 
 
     #try to save image in folder defined if it doesn't already exist
-    if not os.path.exists(r'folder/' + str(number) + '.jpg'):
-        img.save("/home/pi/Desktop/folder/" + str(number) + ".jpg", 'JPEG')
+    if not os.path.exists('E:\folder\\' + str(number) + '.jpg'):
+        img.save(r'E:\folder\\' + str(number) + '.jpg')
     #if it does exist add 5000 to number to make it new
     else:
-        img.save("/home/pi/Desktop/folder/" + str(number + 5000) + ".jpg", 'JPEG')
+        img.save(r'E:\folder\\' + str(number+5000) + '.jpg')
 
 def Run_Multiple(howMany):
     #create directory named 'folder'
-    newpath = r'folder'
+    newpath = r'E:\folder'
     if not os.path.exists(newpath):
         os.makedirs(newpath)
 
@@ -173,7 +172,7 @@ def Run_Multiple(howMany):
     for i in range(howMany):
         Plot_Square(i)
 
-Run_Multiple(5)
+Run_Multiple(100)
 
 
     
@@ -182,9 +181,16 @@ Run_Multiple(5)
 To do list:
 - Randomize Gaussian function so different sizes and intensities can appear
   ^ Different intensities and spreads ^
-- Pixels close to each other in one image
+- Pixels close to each other in one image - stop them overlapping, add intensities together
 - Modify code so that pixels form shape at random
 - Overlay images?
-
 - create another Python program to interpret the image created
+"""
+"""
+Next File:
+- Open images in folder
+- Scan images for high intensities
+- When found save coords
+- Create new image
+- Plot coords found
 """
