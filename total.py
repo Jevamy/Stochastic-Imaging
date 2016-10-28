@@ -75,7 +75,7 @@ def Plot_Max(num_points): #Input number of random pixels and detect them
                 Coords_of_cntre.append(Loc_of_point) #add coordinates to list
                       
     for coord in (Coords_of_cntre): #for each maximum 
-        makeGaussian(random.randint(3,9),random.randint(3,9),)  #call function to make individual guassian distributions for each point
+        makeGaussian(random.randint(3,9),random.randint(2,4),)  #call function to make individual guassian distributions for each point
         gaussianList = newgauss
         index = 0 # count through gauss list
         if (coord[0]-lowerlimit >= 0) & (coord[0]+upperlimit <= width): #checks to see gaussians lie within pixel map
