@@ -122,14 +122,14 @@ def Plot_Square(number):
     totalArray = np.concatenate((topArray, rightArray, leftArray, bottomArray))
 
     Coords_of_cntre = []
-    new_colour = (255,0,0,1) #white 
+    new_colour = (255,0,0,1) #red 
     num_its = 0
     gaussianList = makeGaussian(5,3,)
     
     while num_its <= num_points: #iterate through number of points and randomly plot them
         randomInt = random.randint(0,75) #find random index in square array
         point = totalArray[randomInt] #assign coords to random index
-        img.putpixel(point,new_colour) #Changes Pixel Colour to white
+        img.putpixel(point,new_colour) #Changes Pixel Colour to red
         num_its += 1 #increase count by one
         if num_its == num_points:#break out statement
             break
@@ -144,7 +144,7 @@ def Plot_Square(number):
         makeGaussian(random.randint(3,9),random.randint(2,4),)  #call function to make individual guassian distributions for each point
         gaussianList = newgauss
         index = 0
-        for x in range(coord[0]-lowerlimit, coord[0]+upperlimit, 1): # 5 pixels in x and y direction
+        for x in range(coord[0]-lowerlimit, coord[0]+upperlimit, 1): # direction around mid-ooint pixel depending on size of gaussian
             for y in range(coord[1]-lowerlimit, coord[1]+upperlimit, 1):
                 if (((x <= width) & y <= height)) & ((x & y) >= 0): # boundary limits
                     if index < len(gaussianList): # keep index with list values
@@ -179,8 +179,6 @@ Run_Multiple(100)
 
 """ 
 To do list:
-- Randomize Gaussian function so different sizes and intensities can appear
-  ^ Different intensities and spreads ^
 - Pixels close to each other in one image - stop them overlapping, add intensities together
 - Modify code so that pixels form shape at random
 - Overlay images?
