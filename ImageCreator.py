@@ -2,7 +2,7 @@
 """
 Spyder Editor
 
-This is a temporary script file.
+@author: py13jej
 """
 
 from PIL import Image, ImageDraw
