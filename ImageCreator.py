@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 """
-Created on Mon Oct 03 10:55:57 2016
-@author: py13jej
+Spyder Editor
+
+This is a temporary script file.
 """
 
-
-from PIL import Image
+from PIL import Image, ImageDraw
 import math
 #from scipy.stats import norm
 #import matplotlib.pyplot as plt
@@ -44,151 +45,154 @@ def makeGaussian(size, fwhm, center=None):
             newgauss.append(int(num))
 
     return newgauss
-  
-def Plot_Max(num_points): #Input number of random pixels and detect them
+
+def Plot_Shapes(num_points, shape): #Input number of random pixels and detect them, 
+    # shape = triangle, square or all
     img = Image.new( 'RGBA', (512,512), "black") # create a new black image
     pixels = img.load() # create the pixel map    
     width, height = img.size
-    
-    Coords_of_cntre = []
-    new_colour = (255,255,255,1) #white 
-    num_its = 0
-   
 
-    while num_its <= num_points: #iterate throug h number of points and randomly plot them
-        x = random.randint(1,width)
-        y = random.randint(1,height)
-        if (((x < width) & y < height)) & ((x & y) > 0):
-            img.putpixel((x,y),new_colour) #Changes Pixel Colour to white
-            num_its += 1 #increase count by one
-            if num_its == num_points:#break out statement
-                break
     
-    for i in range(width): #for each pixel
-        for j in range(height):
-            if pixels[i,j] == (255,255,255,1):   #check if pixel is max point
-                Loc_of_point = (i,j) #locate position
-                Coords_of_cntre.append(Loc_of_point) #add coordinates to list
-                      
-    for coord in (Coords_of_cntre): #for each maximum 
-        makeGaussian(random.randint(3,9),random.randint(2,4),)  #call function to make individual guassian distributions for each point
-        print(upperlimit, lowerlimit)
-        gaussianList = newgauss
-        index = 0 # count through gauss list
-        if (coord[0]-lowerlimit >= 0) & (coord[0]+upperlimit <= width): #checks to see gaussians lie within pixel map
-            if (coord[1]-lowerlimit >= 0) & (coord[1]+upperlimit <= height):
-       
-                for hor in range(coord[0]-lowerlimit, coord[0]+upperlimit, 1): # size of distribution in x and y direction
-                    for ver in range(coord[1]-lowerlimit, coord[1]+upperlimit, 1):
-                        #if (((hor <= width) & ver <= height)) & ((hor & ver) >= 0): # boundary limits
-                            if index < len(gaussianList): # keep index with list values
-                                img.putpixel((hor,ver), (gaussianList[index],gaussianList[index],gaussianList[index],1)) # change colour of pixel
-                                index = index + 1 #count through gaussian list
-            else:
-                print("Y coordinate Gaussian values lie outside of image map", coord , lowerlimit, upperlimit)
-        else : 
-            print("X coordinate Gaussian values lie outside of image map", coord , lowerlimit, upperlimit)
-    #print('There are' ,num_points, 'maximum points. At the following locations :-' ,Coords_of_cntre ) 
     
-    img.show()          
-Plot_Max(100)
- # apply matrix to pixels surrounding centre point to create gaussian distribution
-
-
- 
-def Plot_Square(number):
-    img = Image.new('RGBA', (512,512), "black") # create a new black image
-    pixels = img.load() # create the pixel map    
-    width, height = img.size
-    
-    num_points = random.randint(1,5) #set number of random points wanted
-     
-    #Create empty arrays for each side of the square
-    topArray = []
-    rightArray = []
-    leftArray = []
-    bottomArray = []
-    i = 0
-    
-    #define the points in each side of the square (10px apart around centre of image)
-    while (i < 20):
-        topArray.append(((156 + (i*10)),156))
-        rightArray.append((356,(156 + (i*10))))
-        leftArray.append((156, (156 + (i*10))))
-        bottomArray.append(((156 + (i*10)),356))
-        i += 1
+    if shape.upper() in ("TRIANGLE","ALL"):     
+        """
+        Plot Gaussian distribution at random locations in a triangle
+        """
+        tri_its = 0
+        tri_colour = (255,0,0,1) #red 
         
-    #concatenate all of the sides into one array
-    totalArray = np.concatenate((topArray, rightArray, leftArray, bottomArray))
-
-    Coords_of_cntre = []
-    new_colour = (255,0,0,1) #red 
-    num_its = 0
-    gaussianList = makeGaussian(5,3,)
-    
-    while num_its <= num_points: #iterate through number of points and randomly plot them
-        randomInt = random.randint(0,75) #find random index in square array
-        point = totalArray[randomInt] #assign coords to random index
-        img.putpixel(point,new_colour) #Changes Pixel Colour to red
-        num_its += 1 #increase count by one
-        if num_its == num_points:#break out statement
-            break
-    
-    for i in range(width): #for each pixel
-        for j in range(height):
-            if pixels[i,j] == (255,0,0,1):   #check if pixel is max point
-                Loc_of_point = (i,j) #locate position
-                Coords_of_cntre.append(Loc_of_point) #add coordinates to list
-                    
-    for coord in (Coords_of_cntre): #for each maximum 
-        makeGaussian(random.randint(3,9),random.randint(2,4),)  #call function to make individual guassian distributions for each point
-        gaussianList = newgauss
-        index = 0
-        for x in range(coord[0]-lowerlimit, coord[0]+upperlimit, 1): # direction around mid-ooint pixel depending on size of gaussian
-            for y in range(coord[1]-lowerlimit, coord[1]+upperlimit, 1):
-                if (((x <= width) & y <= height)) & ((x & y) >= 0): # boundary limits
-                    if index < len(gaussianList): # keep index with list values
-
-                        img.putpixel((x,y), (gaussianList[index],0,0,1)) # change colour of pixel
-                        
-                        index = index + 1 #count through gaussian list
+        x = 250 # positions of inital points
+        y = 180
+        tri_size = 75
+        triangle_coord_list = []
+        numpoints_coord_list = []
+        for count, checker in enumerate(range(tri_size)): # Create right angle triangle 
+            triangle_coord_list.append((x+count,y+count)) #hypotenuse
             
-    print('There are' ,num_points, 'maximum points. At the following locations :-' ,Coords_of_cntre ) 
+            if checker == len(range(tri_size))-1:
+                
+                for count2, checker2 in enumerate(range(tri_size)): # horizontal line
+                    triangle_coord_list.append((x+count2,y))
+                    
+                    if checker2 == len(range(tri_size))-1:
+                        
+                         for count3 in range(tri_size): # vertical line
+                             triangle_coord_list.append(((x+len(range(tri_size)),y+count3)))
+        
+        while tri_its <= num_points: #iterate through number of points and randomly plot them
+            randomInt = random.randint(0,len(triangle_coord_list)-1) #find random index in square array
+            point = triangle_coord_list[randomInt] #assign coords to random index       
+            numpoints_coord_list.append(point)
+            img.putpixel(point,tri_colour) #Changes Pixel Colour
+            tri_its += 1 #increase count by one
+            if tri_its == num_points:#break out statement
+                break
+                              
+        for tri_coord in (numpoints_coord_list): #for each maximum 
+            makeGaussian(random.randint(3,9),random.randint(2,4),)  #call function to make individual guassian distributions for each point
+            gaussianList = newgauss
+            tri_index = 0 # count through gauss list
+            if (tri_coord[0]-lowerlimit >= 0) & (tri_coord[0]+upperlimit <= width): #checks to see gaussians lie within pixel map
+                if (tri_coord[1]-lowerlimit >= 0) & (tri_coord[1]+upperlimit <= height):
+           
+                    for hor in range(tri_coord[0]-lowerlimit, tri_coord[0]+upperlimit, 1): # size of distribution in x and y direction
+                        for ver in range(tri_coord[1]-lowerlimit, tri_coord[1]+upperlimit, 1):
+                            
+                                if tri_index < len(gaussianList): # keep index with list values
+                                    
+                                    tri_gauss_change = float((pixels[hor,ver][0] + gaussianList[tri_index])) # divided by too for average and too avoid over saturation
+                                    if tri_gauss_change >= 255:
+                                        tri_new_colour = 255
+                                    else:
+                                        tri_new_colour = tri_gauss_change
+                                    
+                                    img.putpixel((hor,ver), int(tri_new_colour)) # change colour of pixel
 
-    #try to save image in folder defined if it doesn't already exist
-    if not os.path.exists('E:\folder\\' + str(number) + '.jpg'):
-        img.save(r'E:\folder\\' + str(number) + '.jpg')
-    #if it does exist add 5000 to number to make it new
-    else:
-        img.save(r'E:\folder\\' + str(number+5000) + '.jpg')
-
-def Run_Multiple(howMany):
-    #create directory named 'folder'
-    newpath = r'E:\folder'
-    if not os.path.exists(newpath):
-        os.makedirs(newpath)
-
-    #run square how many times wanted
-    for i in range(howMany):
-        Plot_Square(i)
-
-Run_Multiple(100)
-
-
+                                    tri_index = tri_index + 1 #next gaussian list value
+                else:
+                    print("Y coordinate Gaussian values lie outside of image map", tri_coord , lowerlimit, upperlimit)
+            else : 
+                print("X coordinate Gaussian values lie outside of image map", tri_coord , lowerlimit, upperlimit)
+        print('There are' ,num_points, 'maximum points on the triangle. At the following locations :-' ,numpoints_coord_list)
+                
+   
     
-
-""" 
-To do list:
-- Pixels close to each other in one image - stop them overlapping, add intensities together
-- Modify code so that pixels form shape at random
-- Overlay images?
-- create another Python program to interpret the image created
-"""
-"""
-Next File:
-- Open images in folder
-- Scan images for high intensities
-- When found save coords
-- Create new image
-- Plot coords found
-"""
+    if shape.upper() in ("SQUARE","ALL"):     
+            
+        """
+        plot random gaussian distributions around square
+        """
+        x = 200 # positions of inital points
+        y = 200
+        square_size = 100
+        square_coord_list = []
+        numsquare_coord_list = []
+        num_sq_its = 0
+        square_colour = (0,255,0,1)
+        
+        for count_square, checker_square in enumerate(range(square_size)): # Create right angle triangle 
+            square_coord_list.append((x+count_square,y))                                    #horizontal lower line
+            
+            if checker_square == len(range(square_size))-1:                                 #last element check
+                
+                for count_square2, checker_square2 in enumerate(range(square_size)):        # vertical left line
+                    square_coord_list.append((x,y+count_square2))
+                    
+                    if checker_square2 == len(range(square_size))-1:
+                        
+                         for count_square3, checker_square3 in enumerate(range(square_size)):   # horizontal upper line                        
+                             square_coord_list.append((x+count_square3,y+count_square2))
+                             
+                             if checker_square3 == len(range(square_size))-1:
+                        
+                                 for count_square4 in range(square_size):                       # vertical right line
+                                     square_coord_list.append(((x+count_square3,y+count_square4)))
+                                     
+                                     
+        while num_sq_its <= num_points: #iterate through number of points and randomly plot them
+              randomInt = random.randint(0,len(square_coord_list)-1) #find random index in square array
+              square_point = square_coord_list[randomInt] #assign coords to random index
+              numsquare_coord_list.append(square_point)
+              img.putpixel(square_point,square_colour) #Changes Pixel Colour
+              num_sq_its += 1 #increase count by one
+              if num_sq_its == num_points:#break out statement
+                  break
+                    
+        for sq_coord in (numsquare_coord_list): #for each maximum 
+            makeGaussian(random.randint(3,9),random.randint(2,4),)  #call function to make individual guassian distributions for each point
+            gaussianList = newgauss
+            sq_index = 0
+            for sq_x in range(sq_coord[0]-lowerlimit, sq_coord[0]+upperlimit, 1): # 5 pixels in x and y direction
+                for sq_y in range(sq_coord[1]-lowerlimit, sq_coord[1]+upperlimit, 1):
+                    if (((sq_x <= width) & sq_y <= height)) & ((sq_x & sq_y) >= 0): # boundary limits
+                        if sq_index < len(gaussianList): # keep index with list values
+                        
+                            sq_gauss_change = float((pixels[sq_x,sq_y][0] + gaussianList[sq_index]))
+                            
+                            if sq_gauss_change >= 255:
+                                sq_new_colour = 255
+                            else:
+                                sq_new_colour = sq_gauss_change                           
+                            img.putpixel((sq_x,sq_y), int(sq_new_colour)) # change colour of pixel
+                            
+                            sq_index = sq_index + 1 #count through gaussian list
+         
+        print('There are' ,num_points, 'maximum points on the square. At the following locations :-' ,numsquare_coord_list)
+                            
+                            
+                            
+        
+        
+    img.show()
+#    # Create Circle
+#    """
+#    Credit to John La rooy http://stackoverflow.com/questions/2980366/python-draw-a-circle-with-pil
+#    """
+#    xc = 300
+#    yc = 330
+#    r = 50
+#    draw = ImageDraw.Draw(img)
+#    draw.ellipse((xc-r, yc-r, xc+r, yc+r))
+    
+          
+Plot_Shapes(50, "all")
