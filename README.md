@@ -10,4 +10,5 @@ Experimental Setup:
 - Capture multiple images and reduce intensity maxima to single point 
 - Aggregate images to form a final, sharp image
 
+Notes:
 - The LED array and camera will be controlled using Raspberry Pis
