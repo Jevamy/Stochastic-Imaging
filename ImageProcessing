@@ -15,7 +15,7 @@ import math
 #import matplotlib.pyplot as plt
 #import matplotlib.patches as circle
 import numpy as np
-#from scipy import asarray as exp
+
 #from scipy.optimize import curve_fit
 import random
 import os
