@@ -1,4 +1,7 @@
 # Stochastic-Imaging
+
+Python v3.5
+
 Producing, Analysing and Aggregating images
 
 - This repository will follow my final year project, the aim being to beat optical resolution with stochastic imaging
