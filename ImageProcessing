@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 28 15:02:01 2016
+
+@author: py13jej
+"""
+
+""" 
+Program to open images from folder and locate maximum intensities
+"""
+
+from PIL import Image
+import math
+#from scipy.stats import norm
+#import matplotlib.pyplot as plt
+#import matplotlib.patches as circle
+import numpy as np
+#from scipy import asarray as exp
+#from scipy.optimize import curve_fit
+import random
+import os
+import glob
+
+
+def Open_Images(path):
+    
+    
+    piclist = []
+    for picture in glob.glob(path + '*.jpg'):
+        img = Image.open(picture)
+        pixels = img.load() # create the pixel map 
+        width, height = img.size
+        for x in range(width):
+            for y in range(height):
+                if pixels[x,y] != (0,0,0):
+                    print(x , y,  pixels[x,y])
+        piclist.append(picture)
+        img.close()
+        
+    print(piclist)
+        
+#    for image in os.listdir(path):
+#        if image.endswith(".jpg"):
+#            img = Image.open(image, 'r')
+#            #pixels = img.load()
+#            width, height = img.size
+#            print("width" + width + "height" + height)
+
+Open_Images(r'E:\folder\\')
+        
