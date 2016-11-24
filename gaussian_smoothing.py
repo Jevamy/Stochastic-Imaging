@@ -340,12 +340,15 @@ width, height = img.size
 new_colour = (255,0,0,1)
 
 candList = []
-
+i=0
 for cands in brights:  
     candList.append({
                     'x_slice': cands[0],
                     'y_slice': cands[1]})
-    print(cands[0])
+    img.putpixel((cands[1].start + 10, cands[0].start + 10), new_colour)
+    i += 1
+print i
+img.show()
 print(candList)
 
 
