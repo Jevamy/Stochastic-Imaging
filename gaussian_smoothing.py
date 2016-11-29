@@ -29,8 +29,6 @@ for x in range(512):
     for y in range(512):
         newImg[x, y] = img[x,y,1]
 
-print(newImg.shape)
-
 #plt.savefig('testplot3.png')
 
 def _image_to_molecule_locations(
@@ -336,15 +334,27 @@ def _spots_and_slices(im, av, sd, thresh, locs, darklocs):
 #print(deaths)
 
 maxPixels = []
-im = im.convert('LA')
 
-minMax = im.getextrema()
-maxPixels.append(minMax[1])
-im[(minMax[1][0]-10):(minMax[1][0]+10), (minMax[1][1]-10):(minMax[1][1]+10)] = (0,0,0)
+for loc in brights:
+    im = Image.open('image8.jpg')
+    im = im.convert('L')
+    im = im.crop(((loc[1].start), (loc[0].start), (loc[1].stop), (loc[0].stop)))
+    minima, maxima = im.getextrema()
+    
+    for width in range(im.size[0]):
+        for height in range(im.size[1]):
+            if im.getpixel((width, height)) == maxima:
+                maxPixels.append(((width + loc[1].start), (height + loc[0].start)))
     
 #trying to find each maxima then set pixels around to black and repeat (not yet working)
 print(maxPixels)
+finalImg = Image.new('RGBA', (512,512), "black") 
+new_colour = (255,0,0,1) #red 
 
+for each in maxPixels:
+    finalImg.putpixel(each,new_colour) #Changes Pixel Colour to red
+
+finalImg.show()
 
 #candList = []
 #i=0
