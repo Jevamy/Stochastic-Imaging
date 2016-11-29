@@ -329,9 +329,6 @@ def _spots_and_slices(im, av, sd, thresh, locs, darklocs):
     #returns normal image and simple tagged image in terms of 1's and 0's
     
 (brights, births, deaths) = _image_to_molecule_locations(imageIn=newImg, image_num=1, xyShape=[20,20], showResults=True)
-#print("brights" + str(brights))
-#print(births)
-#print(deaths)
 
 maxPixels = []
 
@@ -346,7 +343,6 @@ for loc in brights:
             if im.getpixel((width, height)) == maxima:
                 maxPixels.append(((width + loc[1].start), (height + loc[0].start)))
     
-#trying to find each maxima then set pixels around to black and repeat (not yet working)
 print(maxPixels)
 finalImg = Image.new('RGBA', (512,512), "black") 
 new_colour = (255,0,0,1) #red 
@@ -355,16 +351,3 @@ for each in maxPixels:
     finalImg.putpixel(each,new_colour) #Changes Pixel Colour to red
 
 finalImg.show()
-
-#candList = []
-#i=0
-#for cands in brights:  
-#    candList.append({
-#                    'x_slice': cands[0],
-#                    'y_slice': cands[1]})
-#    img.putpixel((cands[1].start + 10, cands[0].start + 10), new_colour)
-#    i += 1
-#print i
-#img.show()
-#print(candList)
-#
