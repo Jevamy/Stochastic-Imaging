@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import numpy
 from PIL import Image
 
+im = Image.open('image8.jpg')
 img = ndimage.imread('image8.jpg')
 newImg = numpy.zeros((512,512))
 i = 0
@@ -334,25 +335,26 @@ def _spots_and_slices(im, av, sd, thresh, locs, darklocs):
 #print(births)
 #print(deaths)
 
-img = Image.new('RGBA', (512,512), "black")
-pixels = img.load()
-width, height = img.size
-new_colour = (255,0,0,1)
+maxPixels = []
+im = im.convert('LA')
 
-candList = []
-i=0
-for cands in brights:  
-    candList.append({
-                    'x_slice': cands[0],
-                    'y_slice': cands[1]})
-    img.putpixel((cands[1].start + 10, cands[0].start + 10), new_colour)
-    i += 1
-print i
-img.show()
-print(candList)
+minMax = im.getextrema()
+maxPixels.append(minMax[1])
+im[(minMax[1][0]-10):(minMax[1][0]+10), (minMax[1][1]-10):(minMax[1][1]+10)] = (0,0,0)
+    
+#trying to find each maxima then set pixels around to black and repeat (not yet working)
+print(maxPixels)
 
 
-
-
-
-
+#candList = []
+#i=0
+#for cands in brights:  
+#    candList.append({
+#                    'x_slice': cands[0],
+#                    'y_slice': cands[1]})
+#    img.putpixel((cands[1].start + 10, cands[0].start + 10), new_colour)
+#    i += 1
+#print i
+#img.show()
+#print(candList)
+#
