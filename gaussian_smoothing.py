@@ -328,26 +328,36 @@ def _spots_and_slices(im, av, sd, thresh, locs, darklocs):
     return (normIm, taggedIm)
     #returns normal image and simple tagged image in terms of 1's and 0's
     
+def show_locations(brights):
+    
+    maxPixels = [] #empty array to append max locations to
+    
+    for loc in brights: #for each bright spot
+        im = Image.open('image8.jpg')
+        im = im.convert('L')
+        im = im.crop(((loc[1].start), (loc[0].start), (loc[1].stop), (loc[0].stop)))
+        #open image, convert to greyscale and crop to location of bright spot
+        minima, maxima = im.getextrema()
+        #get value of maximum pixel
+        
+        for width in range(im.size[0]):
+            for height in range(im.size[1]):
+                if im.getpixel((width, height)) == maxima:
+                    maxPixels.append(((width + loc[1].start), (height + loc[0].start)))
+        #when the pixel in the image matches values with max pixel value
+        #append it to array in terms of global picture
+        
+    finalImg = Image.new('RGBA', (512,512), "black") 
+    new_colour = (255,0,0,1) #red 
+    #create new image to plot on to
+    
+    for each in maxPixels:
+        finalImg.putpixel(each,new_colour) #Changes Pixel Colour to red
+    #plot each point in user defined colour
+    
+    finalImg.show() #show image
+    return
+    
 (brights, births, deaths) = _image_to_molecule_locations(imageIn=newImg, image_num=1, xyShape=[20,20], showResults=True)
 
-maxPixels = []
-
-for loc in brights:
-    im = Image.open('image8.jpg')
-    im = im.convert('L')
-    im = im.crop(((loc[1].start), (loc[0].start), (loc[1].stop), (loc[0].stop)))
-    minima, maxima = im.getextrema()
-    
-    for width in range(im.size[0]):
-        for height in range(im.size[1]):
-            if im.getpixel((width, height)) == maxima:
-                maxPixels.append(((width + loc[1].start), (height + loc[0].start)))
-    
-print(maxPixels)
-finalImg = Image.new('RGBA', (512,512), "black") 
-new_colour = (255,0,0,1) #red 
-
-for each in maxPixels:
-    finalImg.putpixel(each,new_colour) #Changes Pixel Colour to red
-
-finalImg.show()
+show_locations(brights)
