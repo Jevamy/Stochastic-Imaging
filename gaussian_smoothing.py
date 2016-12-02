@@ -41,10 +41,6 @@ def _image_to_molecule_locations(
     #Default = 4
     #'numSTD' is the number of standard deviations of brightness a particle must 
     #rise above the image mean to be considered a particle
-    
-    showResults=False,
-    #Default = none
-    
     ):
     
     """
@@ -177,6 +173,6 @@ def show_locations(brights):
     finalImg.show() #show image
     return
     
-brights = _image_to_molecule_locations(imageIn=newImg, xyShape=[20,20], showResults=True)
+brights = _image_to_molecule_locations(imageIn=newImg, xyShape=[20,20])
 
 show_locations(brights)
