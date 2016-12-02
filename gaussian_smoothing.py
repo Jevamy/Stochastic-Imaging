@@ -34,28 +34,13 @@ def _image_to_molecule_locations(
     imageIn, 
     #The image in 2d array form
     
-    image_num,
-    #Image number
-    
     xyShape,
     #Shape of calibration stack used to localise particles in image
-    
-    previousFrame=None,
-    #Default = none
-    
-    unfilteredImage=None,
-    #Default = none
-    
-    unfilteredPreviousFrame=None,
-    #Default = none
     
     numSTD=4,
     #Default = 4
     #'numSTD' is the number of standard deviations of brightness a particle must 
     #rise above the image mean to be considered a particle
-    
-    numSTD_changed=None,
-    #Default = none
     
     showResults=False,
     #Default = none
@@ -192,6 +177,6 @@ def show_locations(brights):
     finalImg.show() #show image
     return
     
-brights = _image_to_molecule_locations(imageIn=newImg, image_num=1, xyShape=[20,20], showResults=True)
+brights = _image_to_molecule_locations(imageIn=newImg, xyShape=[20,20], showResults=True)
 
 show_locations(brights)
